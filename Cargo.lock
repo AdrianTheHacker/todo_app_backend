@@ -966,12 +966,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustc-serialize"
-version = "0.3.24"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf128d1287d2ea9d80910b5f1120d0b8eede3fbf1abe91c40d39ea7d51e6fda"
-
-[[package]]
 name = "rustversion"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1167,7 +1161,7 @@ name = "todo_app_backend"
 version = "0.1.0"
 dependencies = [
  "rocket",
- "rustc-serialize",
+ "serde_json",
 ]
 
 [[package]]
