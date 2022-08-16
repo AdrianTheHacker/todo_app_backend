@@ -1,11 +1,4 @@
 {
-    "name": "User1",
-    "favourite_candy": "Sour Gummy Worms",
-    "Jobs": [
-        "Cashier",
-        "Lifeguard",
-        "Instructor"
-    ],
     "Todo": [
         "Go to paddling",
         "Finish making this app",
