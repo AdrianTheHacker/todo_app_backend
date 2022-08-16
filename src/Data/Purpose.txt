@@ -2,3 +2,5 @@ This directory is where all the user data is stored.
 
 When pushing to Github, make sure all contents of this directory are
 listed inside the .gitignore file.
+
+JohnDoe.json is an example of what a user's data might look like for this app.
