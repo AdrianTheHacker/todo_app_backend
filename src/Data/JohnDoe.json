@@ -1,9 +1,7 @@
 {
-    "Todo": [
-        "Go to paddling",
-        "Finish making this app",
-        "Add the front end in",
-        "Eat food",
-        "Pet dog"
-    ]
+  "Todo": [
+    "Eat",
+    "Sleep",
+    "Code"
+  ]
 }
