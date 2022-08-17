@@ -1161,7 +1161,6 @@ name = "todo_app_backend"
 version = "0.1.0"
 dependencies = [
  "rocket",
- "serde_json",
 ]
 
 [[package]]

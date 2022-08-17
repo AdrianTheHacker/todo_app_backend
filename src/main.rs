@@ -1,10 +1,5 @@
 #[macro_use] extern crate rocket;
 
-use serde_json::{Number, Value};
-
-use std::fs::File;
-use std::io::Read;
-
 #[get("/hello/<name>")]
 fn say_hi(name: &str) -> String {
     // IDK why I put this here
@@ -20,17 +15,11 @@ fn get_todo_list(user: &str) -> String {
     // Throws an error that the file isn't found 
     // if the user doesn't have a todo list.
 
-    let file_path = format!(r"src\Data\{}.json", user);         // Opens the json file for the given user
-    let text = std::fs::read_to_string(&file_path).unwrap();    // Turns contents of the file into a String
-    text                                                        // Returns the file contents as a String
-                                                                // The contents will be printed to the screen
+    let file_path = format!(r"src\Data\{}.json", user);         // Opens the json file for the given user.
+    let text = std::fs::read_to_string(&file_path).unwrap();    // Turns contents of the file into a String.
+    text                                                        // Returns the file contents as a String.
+                                                                // The contents will be printed to the screen.
 }
-
-// #[post("/add_event/<user>")]
-// fn add_event(user: &str) -> String {
-//     // Adds event to users todo list
-//     // Returns users todo list
-// }
 
 #[launch]
 fn rocket() -> _ {
