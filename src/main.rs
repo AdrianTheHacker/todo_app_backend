@@ -64,8 +64,32 @@ fn delete_event(user: &str, event: &str) -> String {
     return format!("The event '{}' doesn't exist inside of {}'s todo list", event, user);
 }
 
+#[get("/edit_event/<user>/<current_event>/<new_event>")]
+fn edit_event(user: &str, current_event: &str, new_event: &str) -> String {
+    let file_path = format!(r"src\Data\{}.json", user);
+    let text = fs::read_to_string(&file_path).unwrap();
+
+    let mut user_data: User = serde_json::from_str(&text).unwrap();
+
+    for list_index in 0..user_data.Todo.len() {
+
+        println!("User Data: {}", user_data.Todo[list_index]);
+        if user_data.Todo[list_index] == current_event {
+            user_data.Todo[list_index] = String::from(new_event);
+
+            let json = serde_json::to_string_pretty(&user_data).unwrap();
+            fs::write(file_path, json).expect("Unable to write to file");
+
+            println!("Successfully edited '{}' to '{}' in {}'s todo list", current_event, new_event, user);
+            return format!("Successfully edited '{}' to '{}' in {}'s todo list", current_event, new_event, user);
+        }
+    }
+
+    println!("The event '{}' doesn't exist inside of {}'s todo list", current_event, user);
+    return format!("The event '{}' doesn't exist inside of {}'s todo list", current_event, user);
+}
+
 // functions to implement
-fn edit_event(user: &str, current_event: &str, new_event: &str) {}
 fn create_new_user(user: &str) {}
 fn delete_user(user: &str) {}
 fn help() {}
@@ -81,4 +105,5 @@ fn rocket() -> _ {
                    .mount("/", routes![get_all_events])
                    .mount("/", routes![add_event])
                    .mount("/", routes![delete_event])
+                   .mount("/", routes![edit_event])
 }
