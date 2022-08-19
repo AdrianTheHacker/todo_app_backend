@@ -46,7 +46,7 @@ fn delete_event(user: &str, event: &str) -> String {
 
     let mut user_data: User = serde_json::from_str(&text).unwrap();
 
-    for list_index in user_data.Todo.len()..0 {
+    for list_index in 0..user_data.Todo.len() {
 
         println!("User Data: {}", user_data.Todo[list_index]);
         if user_data.Todo[list_index] == event {
