@@ -41,27 +41,33 @@ fn add_event(user: &str, event: &str) -> String {
 
 #[get("/delete_event/<user>/<event>")]
 fn delete_event(user: &str, event: &str) -> String {
-    let file_path = format!(r"src\Data\{}.json", user);
-    let text = fs::read_to_string(&file_path).unwrap();
+    /// Deletes the first instance of an event inside of a given user's JSON file.
 
-    let mut user_data: User = serde_json::from_str(&text).unwrap();
+    let file_path = format!(r"src\Data\{}.json", user);     // Finds the the JSON file that stores a given users data.
+    let text = fs::read_to_string(&file_path).unwrap();     // Grabs all the contents of the file.
 
-    for list_index in 0..user_data.Todo.len() {
+    let mut user_data: User = serde_json::from_str(&text).unwrap();     // Creating a User struct out of the JSON data
+                                                                        // Allows us to modify it easier.
+
+    let mut completion_message = format!("The event '{}' doesn't exist inside of {}'s todo list", event, user);      // Message displayed after completiion.
+                                                                                                                    // This is meant for debugging.
+
+    for list_index in 0..user_data.Todo.len() {     // Searches for the event, and then deletes it.
 
         println!("User Data: {}", user_data.Todo[list_index]);
         if user_data.Todo[list_index] == event {
-            user_data.Todo.remove(list_index);
+            user_data.Todo.remove(list_index);      // Removes the event from the list
 
-            let json = serde_json::to_string_pretty(&user_data).unwrap();
-            fs::write(file_path, json).expect("Unable to write to file");
+            let json = serde_json::to_string_pretty(&user_data).unwrap();       // Creates JSON data out of the user_data Struct.
+            fs::write(file_path, json).expect("Unable to write to file");       // Writes this JSON data back to the user's JSON file.
 
-            println!("Successfully removed '{}' from {}'s todo list", event, user);
-            return format!("Successfully removed '{}' from {}'s todo list", event, user);
+            completion_message = format!("Successfully removed '{}' from {}'s todo list", event, user);     // Changes the completion_message (for debugging purposes)
+            break;
         }
     }
 
-    println!("The event '{}' doesn't exist inside of {}'s todo list", event, user);
-    return format!("The event '{}' doesn't exist inside of {}'s todo list", event, user);
+    println!(completion_message);
+    return completion_message;
 }
 
 #[get("/edit_event/<user>/<current_event>/<new_event>")]
@@ -70,6 +76,8 @@ fn edit_event(user: &str, current_event: &str, new_event: &str) -> String {
     let text = fs::read_to_string(&file_path).unwrap();
 
     let mut user_data: User = serde_json::from_str(&text).unwrap();
+
+    let mut completion_message = format!("The event '{}' doesn't exist inside of {}'s todo list", current_event, user);
 
     for list_index in 0..user_data.Todo.len() {
 
@@ -80,13 +88,13 @@ fn edit_event(user: &str, current_event: &str, new_event: &str) -> String {
             let json = serde_json::to_string_pretty(&user_data).unwrap();
             fs::write(file_path, json).expect("Unable to write to file");
 
-            println!("Successfully edited '{}' to '{}' in {}'s todo list", current_event, new_event, user);
-            return format!("Successfully edited '{}' to '{}' in {}'s todo list", current_event, new_event, user);
+            completion_message = format!("Successfully edited '{}' to '{}' in {}'s todo list", current_event, new_event, user);
+            break;
         }
     }
 
-    println!("The event '{}' doesn't exist inside of {}'s todo list", current_event, user);
-    return format!("The event '{}' doesn't exist inside of {}'s todo list", current_event, user);
+    println!(completion_message);
+    return completion_message;
 }
 
 // functions to implement
