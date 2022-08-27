@@ -30,7 +30,7 @@ fn add_event(user: &str, event: &str) -> String {
     let text = fs::read_to_string(&file_path).unwrap();     // Retrieves all teh data stored in the JSON file as a string.
 
     let mut user_data: User = serde_json::from_str(&text).unwrap();      // Turns JSON into User struct.
-    user_data.Todo.push(event.to_string());                              // Adds new event to User struct todo vec.
+    user_data.todo.push(event.to_string());                              // Adds new event to User struct todo vec.
 
     let json = serde_json::to_string_pretty(&user_data).unwrap();        // Converts User struct into JSON.
     fs::write(file_path, json).expect("Unable to write to file");        // Writes new JSON to the users JSON file.
@@ -41,7 +41,7 @@ fn add_event(user: &str, event: &str) -> String {
 
 #[get("/delete_event/<user>/<event>")]
 fn delete_event(user: &str, event: &str) -> String {
-    /// Deletes the first instance of an event inside of a given user's JSON file.
+    // Deletes the first instance of an event inside of a given user's JSON file.
 
     let file_path = format!(r"src\Data\{}.json", user);     // Finds the the JSON file that stores a given users data.
     let text = fs::read_to_string(&file_path).unwrap();     // Grabs all the contents of the file.
@@ -52,11 +52,11 @@ fn delete_event(user: &str, event: &str) -> String {
     let mut completion_message = format!("The event '{}' doesn't exist inside of {}'s todo list", event, user);      // Message displayed after completiion.
                                                                                                                     // This is meant for debugging.
 
-    for list_index in 0..user_data.Todo.len() {     // Searches for the event, and then deletes it.
+    for list_index in 0..user_data.todo.len() {     // Searches for the event, and then deletes it.
 
-        println!("User Data: {}", user_data.Todo[list_index]);
-        if user_data.Todo[list_index] == event {
-            user_data.Todo.remove(list_index);      // Removes the event from the list
+        println!("User Data: {}", user_data.todo[list_index]);
+        if user_data.todo[list_index] == event {
+            user_data.todo.remove(list_index);      // Removes the event from the list
 
             let json = serde_json::to_string_pretty(&user_data).unwrap();       // Creates JSON data out of the user_data Struct.
             fs::write(file_path, json).expect("Unable to write to file");       // Writes this JSON data back to the user's JSON file.
@@ -66,7 +66,7 @@ fn delete_event(user: &str, event: &str) -> String {
         }
     }
 
-    println!(completion_message);
+    println!("{}", completion_message);
     return completion_message;
 }
 
@@ -79,11 +79,11 @@ fn edit_event(user: &str, current_event: &str, new_event: &str) -> String {
 
     let mut completion_message = format!("The event '{}' doesn't exist inside of {}'s todo list", current_event, user);
 
-    for list_index in 0..user_data.Todo.len() {
+    for list_index in 0..user_data.todo.len() {
 
-        println!("User Data: {}", user_data.Todo[list_index]);
-        if user_data.Todo[list_index] == current_event {
-            user_data.Todo[list_index] = String::from(new_event);
+        println!("User Data: {}", user_data.todo[list_index]);
+        if user_data.todo[list_index] == current_event {
+            user_data.todo[list_index] = String::from(new_event);
 
             let json = serde_json::to_string_pretty(&user_data).unwrap();
             fs::write(file_path, json).expect("Unable to write to file");
@@ -93,18 +93,29 @@ fn edit_event(user: &str, current_event: &str, new_event: &str) -> String {
         }
     }
 
-    println!(completion_message);
+    println!("{}", completion_message);
+    return completion_message;
+}
+
+#[get("/create_new_user/<user>")]
+fn create_new_user(user: &str) -> String {
+    let file_path = format!(r"src\Data\{}.json", user);
+    let json = serde_json::to_string_pretty(&User {todo: Vec::new()}).unwrap();
+    let completion_message = format!("Sucessfully created {}'s todo list", user);
+
+    fs::write(file_path, json).expect("Unable to create new file / write to that file");
+
+    println!("{}", completion_message);
     return completion_message;
 }
 
 // functions to implement
-fn create_new_user(user: &str) {}
 fn delete_user(user: &str) {}
 fn help() {}
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {
-    Todo: Vec<String>,
+    todo: Vec<String>,
 }
 
 #[launch]
@@ -114,4 +125,5 @@ fn rocket() -> _ {
                    .mount("/", routes![add_event])
                    .mount("/", routes![delete_event])
                    .mount("/", routes![edit_event])
+                   .mount("/", routes![create_new_user])
 }
