@@ -109,9 +109,19 @@ fn create_new_user(user: &str) -> String {
     return completion_message;
 }
 
+// #[get("/delete_user/<user>")]
+// fn delete_user(user: &str) -> String {
+//     let file_path = format!(r"scr\Data\{}.json", user);
+//     let completion_message = format!("Successfully deleted {}'s todo list", user);
+
+//     fs::remove_file(file_path);
+
+//     println!("{}", completion_message);
+//     return completion_message;
+// }
+
 // functions to implement
-fn delete_user(user: &str) {}
-fn help() {}
+// fn help() {}
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {
@@ -126,4 +136,5 @@ fn rocket() -> _ {
                    .mount("/", routes![delete_event])
                    .mount("/", routes![edit_event])
                    .mount("/", routes![create_new_user])
+                   .mount("/", routes![delete_user])
 }
